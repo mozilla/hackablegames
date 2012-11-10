@@ -377,7 +377,13 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
     this.height = toBox2DValue(bbox.height);
 
     var bodyDef = new b2BodyDef;
-    bodyDef.type = b2Body.b2_staticBody;
+    var bodyType = element.getAttribute('data-body-type') || 'dynamic';
+    
+    if(bodyType === 'fixed') {
+        bodyDef.type = b2Body.b2_staticBody;
+    } else {
+        bodyDef.type = b2Body.b2_dynamicBody;
+    }
 
     var fixDef = new b2FixtureDef;
     fixDef.shape = new b2PolygonShape;
@@ -458,7 +464,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
             x = parseFloat(splt[1].trim());
             y = parseFloat(splt[2].trim());
             this.keyHandlers[key] = (function(bar,x,y) {
-              return function() { bar.moveBy(x,y); };
+              return function() { bar.applyImpulse(x,y); };
             }(this,x,y));
           }
         }
@@ -585,6 +591,11 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
       var ball = contact.GetFixtureB().GetBody().GetUserData().element;
        bar.classList.add("colliding");
        ball.classList.add("colliding");
+       
+       if(bar.classList.contains('paddle') && ball.classList.contains('ball')) {
+           console.log('colliding');
+           OnBounceAPI.scoreLeft();
+       }
     };
     listener.EndContact = function(contact) {
       var bar = contact.GetFixtureA().GetBody().GetUserData().element;
@@ -629,6 +640,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
     };
     bars.forEach(fn);
     balls.forEach(fn);
+    keyDown = [];
   };
 
   // draw loop
@@ -658,13 +670,22 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
           h = ball.height/2;
       // out of bounds?
       if (pos.x+w < 0 || pos.x-w > toBox2DValue(worldBBox.width) || pos.y+h < 0 || pos.y-h > toBox2DValue(worldBBox.height)) {
-        if(pos.x+w < 0) { rightWins(); }
-        else { leftWins(); }
         pos.x = ball.start_x;
         pos.y = ball.start_y;
         ball.b2.SetPosition(pos);
         ball.b2.GetLinearVelocity().Normalize();
-        ball.scaleSpeed(3);
+        ball.scaleSpeed(0);
+      }
+    });
+    
+    bars.forEach(function(ball) {
+      var pos = ball.b2.GetPosition(),
+          w = ball.width/2,
+          h = ball.height/2;
+      // out of bounds?
+      if (pos.x+w < 0 || pos.x-w > toBox2DValue(worldBBox.width) || pos.y+h < 0 || pos.y-h > toBox2DValue(worldBBox.height)) {
+        scheduleDestroy(ball);
+        rightWins();
       }
     });
 
@@ -733,9 +754,26 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
       var rp = document.querySelector(".paddle.right");
       if(rp) {
         rightPaddle = new Bar(worldParent, rp, world);
+        rightPaddle.applyImpulse(-3, 0);
         bars.push(rightPaddle);
       }
     }());
+    
+    function addBlock() {
+        var paddle = document.createElement('div');
+        paddle.classList.add('paddle');
+        paddle.classList.add('right');
+        worldParent.appendChild(paddle);
+        var rightPaddle = new Bar(worldParent, paddle, world);
+        rightPaddle.applyImpulse(-3, 0);
+        bars.push(rightPaddle);
+    }
+    
+    setInterval(function() {
+        addBlock();
+    }, 4000);
+    
+    addBlock();
 
 
     // user defined "bars"
@@ -755,7 +793,6 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
         ballElement = ballElements[i];
         ball = new Ball(worldParent, ballElement, world);
         ball.applyForce(gravity.x, gravity.y);
-        ball.applyImpulse(-3,2);
         balls.push(ball);
       }
     }());
@@ -798,9 +835,8 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
 
         // new wall/bar/paddle object?
         var isWallObject = !!classes.match(new RegExp("\\b" + 'wall' + "\\b","")),
-            isBarObject = !!classes.match(new RegExp("\\b" + 'bar' + "\\b","")),
-            isPaddleObject = !!classes.match(new RegExp("\\b" + 'paddle' + "\\b",""));
-        if(isWallObject || isBarObject || isPaddleObject) {
+            isBarObject = !!classes.match(new RegExp("\\b" + 'bar' + "\\b",""));
+        if(isWallObject || isBarObject ) {
           var bar = new Bar(worldParent, el, world);
           bars.push(bar);
         }
@@ -832,6 +868,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
             isPaddleObject = !!classes.match(new RegExp("\\b" + 'paddle' + "\\b",""));
         if(isWallObject || isBarObject || isPaddleObject) {
           bars.splice(bars.indexOf(box2dthing),1);
+          OnBounceAPI.scoreRight();
         }
       }
     }, false);
