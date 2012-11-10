@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="deployment-type-development">
+  <head>
+    <meta charset="utf-8">
+    <base target="_blank">
+
+    <!-- GAME TEST -->
+    <script src="../js/fc/ui/diff/Frame.js"></script>
+    <script src="../js/fc/ui/diff/DOM-diff.js"></script>
+    <script>
+      // ensure style="..." changes are completely ignores when building diffs
+      DOMdiff.setGlobalIgnore(["style", "data-destroyed", "disabled"]);
+    </script>
+    <script src="../js/fc/ui/diff/diffApply.js"></script>
+    <!-- GAME TEST -->
+
+    <title>Pong - The original entertainment super star console hit</title>
+    <link rel="stylesheet" href="../css/friendlycode.css">
+  </head>
+  <body style="margin: 0">
+    <div id="bare-fc-holder" class="friendlycode-loading"></div>
+
+    <script src="../js/require-config.js"></script>
+    <script src="../js/require.min.js"></script>
+
+    <script>
+    // Alternate publisher implementation that publishes to a hackpub
+    // endpoint. For more information, see:
+    //
+    //   https://github.com/hackasaurus/hackpub
+    //
+    // Note also that the Amazon S3 bucket hackpub publishes to must
+    // be configured with a CORS configuration that allows for cross-origin
+    // GET requests, e.g.:
+    //
+    //   <CORSConfiguration xmlns="http://s3.amazonaws.com/doc/2006-03-01/">
+    //     <CORSRule>
+    //       <AllowedOrigin>*</AllowedOrigin>
+    //       <AllowedMethod>GET</AllowedMethod>
+    //     </CORSRule>
+    //   </CORSConfiguration>
+
+    define("hackpub", ["jquery"], function($) {
+      return function Hackpub(options) {
+        return {
+          loadCode: function(path, cb) {
+            var url = options.publishURL + path;
+            $.ajax({
+              type: "GET",
+              url: url,
+              dataType: 'text',
+              error: function(req) {
+                cb(req);
+              },
+              success: function(html) {
+                cb(null, html, url);
+              }
+            });
+          },
+          saveCode: function(data, originalURL, cb) {
+            $.ajax({
+              type: "POST",
+              url: options.hackpubURL + "/publish",
+              data: {
+                'html': data,
+                'original-url': originalURL
+              },
+              dataType: 'json',
+              error: function(req) {
+                cb(req);
+              },
+              success: function(result) {
+                var url = result['published-url'];
+                //var path = '/' + url.match(/\/([A-Za-z0-9]+)$/)[1];
+                var path = '/' + url.match(/\/([A-Za-z0-9=]+)$/)[1];
+                cb(null, {path: path, url: options.publishURL + path});
+              }
+            });
+          }
+        };
+      };
+    });
+    </script>
+
+    <script type="text/html" class="pongTemplate">
+‹!-- ====================
+
+  Ahoy game maker and welcome on board! In this project you will be making your very own  game on the worldwide web. If that seems like a hard task to take upon do not fret! New game hits often come from remixing the classics. And what better classic to have in the mix than Pong?!
+
+  In this project you will use your favorite assets from the web, unleash your HTML & CSS skills and create your own version of the favorite arcade classic Pong!
+
+==================== --›
+
+‹!-- You might notice some words on this page (like ‹h1› and ‹p›) which are inside of angle brackets and colored blue.
+
+These words are called tags. Tags help you to structure your page. The most important thing to remember is that tags (with a few exceptions, like ‹img›) come in pairs - so you almost always need to have an opening and closing tag.
+
+For instance, below this comment is a heading. Everything between the ‹h1› and ‹/h1› tags becomes a big header on the preview page on your right. Try it out by changing the title for your game. --›
+
+‹h1›Pong. Pong. Pong. Common' Give Your Game a New Title‹/h1›
+
+
+‹!-- The ‹p› tag below stands for paragraph. Add a description for your game and rememeber to put a tag at the exact point you want the paragraph to start , like this ‹p› and another tag where you want the paragraph to end, like this ‹/p›. --›
+
+‹p› Pong is the original computer game.‹em›Let's hack it.‹/em›‹/p›
+
+‹section id="game"›
+
+‹!-- Now that you know a little bit more about HTML it's time for some game-hacking.
+
+Rumor has it that games are systems made out of different parts. Take Pong, for example; it has two paddles, a "ball" (even though it's actually a rectangle) a background that is defined by a top and bottom "wall" so that the ball doesn't escape the screen, oh yes and the score!
+All these parts are designed to work together to deliver players with endless gameplay fun.
+
+To make your own pong-tastic game we will hack these parts by tinkering with the ‹div› tags below. What is ‹div› you might ask? Well a ‹div› is a  container that can be used to hold things together. In this case each ‹div›   holds parts of the game such as the paddles, the walls and the ball. --›
+
+  ‹div id="world" tabindex="0"›
+
+  ‹!-- The first of these two ‹div›s are the walls at the top and bottom of the screen.
+Imagine them like a sandwich that keep the ball bouncing back when it hits the edges of the space. Try deleting one or the other to see what happens. Click undo on your navigation bar if you want to go back to your previous action. --›
+
+    ‹div class="top wall"›‹/div›
+    ‹div class="bottom wall"›‹/div›
+
+    ‹!-- The second pair of ‹divs› are the player paddles. They're actually almost the same as walls, except they can respond to the keyboard. If you press "w" or "s" you will move the left padding up/down, and if you press the "up" or "down"cursor keys, you will move the right paddle up/down. Of course, we can play around with these paddles. Try giving your players two paddles, for instance by adding a new div! --›
+
+    ‹div class="paddle left"  data-key-one=" w, 0, -0.1" data-key-two="   s, 0, 0.1"›‹/div›
+    ‹div class="paddle right" data-key-one="up, 0, -0.1" data-key-two="down, 0, 0.1"›‹/div›
+
+    ‹!-- This final ‹div› is our ball. Normally, Pong has one ball, but what if we used more than one....? Old plain Pong would instantly become super-awesome multiplayer pong! Let's try to do that by copying and pasting ‹div class="ball" data-friction="0" data-bounciness="1"›‹/div› --›
+
+    ‹div class="ball" data-friction="0" data-bounciness="1"›‹/div›
+
+    ‹!-- Now that you have become a ‹div› master let's try to play with some of the data attributes within the ‹div› tags.
+
+      Attributes are things like class, data-friction and data-bounciness and we are going to tweak them to allow us to change some of the physics properties for the ball.
+
+      The "data-friction" attribute lets us indicate how much movement by the ball or paddle changes the direction of the ball when it bounces. The "data-bounciness" attribute lets us change how much energy the ball keeps while bouncing. We can indicate the bounciness as a value between 0 and 1, with 0 meaning "lose all speed", effectively glueing the ball in place rather than bouncing.
+
+      A value of 1 means "keep all speed",   making the ball 'perfectly bouncy'. Anything in between make the ball slowly (or fast!) lose its speed as it bounces around, eventually coming to a halt. --›
+
+  ‹/div›
+
+  ‹!-- This is where we keep score. Everytime any ball flies off the screen, it's a point against the player that let it through. Right now the score is set to 0-0. Can you make it start at 10-10? --›
+
+  ‹div class="scores"›
+    ‹span class="left"›0‹/span› : ‹span class="right"›0‹/span›
+  ‹/div›
+
+  ‹!-- Now that you are almost done with your gameplay you need buttons to start and pause your game. Well we are giving you  two button elements for free, and they've been set up to start a game, and pause a running game. We need these to play our game, but removing them, or changing what they do, will probably lead to game simply not being playable. They rely on JavaScript, which is a more advanced language than HTML & CSS and you can get started with it here; https://www.webmaker.org/en-US/projects/make-your-own-game-using-javascript --›
+
+  ‹button onclick="start()"›Start the game‹/button›
+  ‹button onclick="pause()"›Pause the game‹/button›
+
+  ‹p›Instructions: The left player can use uses 'w' and 's' to move up and down, the right player can use the 'up' and 'down' arrow keys.‹/p›
+‹/section›
+
+‹!-- Everything contained within this ‹style› tag is called CSS and it is used to .. you guessed it right; to give some "super stylin" to your webpage. Start hacking the CSS below to add supreme shine to your game; give a theme to your masterpiece, change the world to a tropical island or switch the paddles to images of cat heads... the possibilities are endless!
+
+CSS is slightly different from HTML, and uses a different "syntax", which is a fancy word for "the kind of code you use". Comments inside a ‹style› element start with /* and end with */, and the styling rules use the following format:
+
+  CSS element pattern {
+    css property name: value for that property;
+    another css property name: value for that property;
+    ... : ... ;
+  }
+
+So first a CSS "selector", which tells the browser which elements this rule will be used for, and then one or more property/value indicators wrapped in curly brackets. CSS properties are things like background color, width and height, border decoration, which font to use for text, etc. Let's have a look at what the default game uses:
+--›
+‹style›
+  /* This CSS rule says "for the element with id 'game', center-align the text". The CSS notation for rules that should apply to elements based on their "id" attribute is to use #idtext, so ‹section id="game"› can be styled using #game - ids are unique, so only one element can have a specific id. That means that any CSS rule we make up for it will only ever apply to that one element. */
+
+  #game {
+    text-align: center;
+  }
+
+  /* Next up, we have the CSS for the "world" element. Let's change it up! Give this element some new styling by giving it a background image: add the following code to the set of property:value pairs:
+
+  background-image: url('http://farm6.staticflickr.com/5081/5329485459_1eed1a7aa1.jpg');
+
+  This will make it a tropical game! Of course, since we've just given it an image link, we can also use a different URL. Go find an image that you like as background for the game, using Flickr or Google, and see if you can replace the URL that is in the example background-image for the one you want instead. */
+
+  #world {
+    position: relative;
+    height: 300px;
+    width:  500px;
+    background-color: #333;
+    vertical-align: middle;
+    margin: auto;
+    overflow: hidden;
+  }
+
+/* Now that you learned how to add images to the different parts of your game, go ahead and add images to the paddles and ball below.
+
+  These rules uses a different notation. We saw that #text is for elements with and "id" attribute, the paddle and ball rules apply to elements with a "class" attribute. In the HTML (scroll up to have a look at it again), you'll see ‹div class="ball"...›, and in order to style everything with a specific class, we can use CSS rules that start with a dot and then the class name. The paddle rules are for ".paddle", which means that they will be used for any element that has uses word "paddle" as a class word. Unlike ids, classes can be used by as many elements as you like, so changing the rule for ".paddle" will change both paddles. However, we can also be more specific. Can you find which rules are only for the left or paddle, and change them so that only one of them looks different? */
+
+  .paddle {
+    position: absolute;
+    display: inline-block;
+    width: 10px;
+    height: 100px;
+    background-color: green;
+    top: 40%;
+  }
+
+  .paddle.left { left: 10px; }
+  .paddle.right { right: 10px; }
+
+  .ball {
+    position: absolute;
+    background-color: white;
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    left: 250px;
+  }
+
+  /* In addition to the paddles and ball, it's easy to overlook that the walls are also just plain HTML elements with styling applied. See if you can figure out what the following rules mean, and try to change them into something different. */
+
+  .wall {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background-color: green;
+  }
+
+  .wall.top { top: 0; }
+  .wall.bottom { bottom: 0; }
+
+  .scores {
+    width: 500px;
+    margin: auto;
+    background: black;
+    color: white;
+    font-size:200%;
+    font-family: monospace;
+    font-weight: bold;
+  }
+‹/style›
+
+‹!-- When you are happy with a first version of your game, "playtest" it with your friends or family. "Playtest" is a word we use in game design to describe the process of testing your game in order to find out what works and what doesn't.
+
+Ask your playtester if the game was fun and if they have any suggestions for improving it. Make sure to use the feedback you got to create an improved spectacular version of your game. --›
+
+
+‹!-- ====================
+
+  Congrats! You've successfully hacked Pong to make your own masterpiece! Looks like its going to be a fun one. You might not have noticed, but you gained some game design and HTML & CSS skills along the way. You now know the basics of a building a game system and how to work with headings (‹h1› tag), paragraphs (‹p› tag), divs (‹div› tag) and tweak elements with style (‹style› tag) in HTML5. You even did some playtesting of your game. Way to go Game Master!
+
+==================== --›
+
+‹script src="../js/Box2dWeb-2.1.a.3.js"›‹/script›
+‹script src="../js/physics.js"›‹/script›
+</script>
+
+
+    <script>
+    require([
+      "jquery",
+      "friendlycode",
+      "hackpub"
+    ], function($, FriendlycodeEditor, Hackpub) {
+      var pongTemplate = $(".pongTemplate[type='text/html']").text().replace(/‹/g,'<').replace(/›/g,'>').trim();
+      return FriendlycodeEditor({
+        container: $("#bare-fc-holder"),
+        defaultContent: pongTemplate,
+        allowJS: true,
+        publisher: Hackpub({
+//          hackpubURL: "http://hackpub.hackasaurus.org",
+//          publishURL: "http://poof.hksr.us"
+          hackpubURL: "http://www.hackagame.org",
+          publishURL: "http://www.hackagame.org/examples/remixed"
+        })
+      });
+    });
+    </script>
+  </body>
+</html>

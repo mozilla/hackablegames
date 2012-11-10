@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <base target="_blank">
+
+    <title>Editor Only</title>
+    <link rel="stylesheet" href="../css/friendlycode.css">
+
+    <!-- TEST -->
+    <script src="../js/fc/ui/diff/Frame.js"></script>
+    <script src="../js/fc/ui/diff/DOM-diff.js"></script>
+    <script src="../js/fc/ui/diff/diffApply.js"></script>
+    <!-- TEST -->
+
+  </head>
+  <body style="margin: 0">
+    <div id="editor" class="friendlycode-loading"></div>
+
+    <script src="../js/require-config.js"></script>
+    <script src="../js/require.min.js"></script>
+    <script type="text/html">
+‹h1›Pong!‹/h1›
+
+‹p›Pong is the original computer game. Two paddles, a "ball" (even though it's actually
+  a rectangle), and pure, unadulterated physics. ‹i›let's hack it.‹/i›‹/p›
+
+‹section id="game"›
+  ‹div id="world" tabindex="0"›
+    ‹div class="top wall"›‹/div›
+    ‹div class="bottom wall"›‹/div›
+    ‹div class="paddle left"›‹/div›
+    ‹div class="paddle right"›‹/div›
+    ‹div class="ball" data-density="0" data-friction="0" data-bounciness="1"›‹/div› 
+  ‹/div›
+
+  ‹button onclick="start()"›Start the game‹/button›
+  ‹button onclick="pause()"›Pause the game‹/button›
+  
+  ‹p›Controls: left player uses w/s to move, right player uses up/down arrows.‹/p›
+‹/section›
+
+‹!-- STYLING --›
+‹style›
+  #game {
+    text-align: center;
+  }
+
+  #world {
+    position: relative;
+    height: 300px;
+    width:  500px;
+    background-color: black;
+    vertical-align: middle;
+    margin: auto;
+  }
+  
+  .paddle {
+    position: absolute;
+    display: inline-block;
+    width: 10px;
+    height: 100px;
+    background-color: lightgreen;
+    top: 40%;
+  }
+  
+  .paddle.left { left: 10px; }
+  .paddle.right { right: 10px; }
+
+  .ball {
+    position: absolute;
+    background-color: lightgreen;
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    left: 250px;
+  }
+  
+  .wall {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background-color: yellow;
+  }
+  
+  .wall.top { top: 0; }
+  .wall.bottom { bottom: 0; }
+‹/style›
+
+‹!-- SCRIPTS --›
+‹script src="../js/Box2dWeb-2.1.a.3.js"›‹/script›
+‹script src="../js/physics.js"›‹/script›
+</script>
+
+    <script>
+    require([
+      "jquery",
+      "fc/ui/editor"
+    ], function($, Editor) {
+      var template = $("*[type='text/html']").text().replace(/‹/g,'<').replace(/›/g,'>').trim();
+      var editor = Editor({
+        container: $("#editor"),
+        value: template
+      });
+      editor.panes.codeMirror.focus();
+    });
+    </script>
+  </body>
+</html>

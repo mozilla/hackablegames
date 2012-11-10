@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hack a game!</title>
+    <style>
+      html, body {
+        position: absolute;
+        width: 100%;
+
+        margin: 0;
+        padding: 0;
+        background: white;
+        font-family: 'Press Start 2P';
+      }
+
+      body {
+        background: #0000ff; /* Old browsers */
+        background: -moz-linear-gradient(top,  #0000ff 1%, #007aff 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#0000ff), color-stop(100%,#007aff)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  #0000ff 1%,#007aff 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  #0000ff 1%,#007aff 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  #0000ff 1%,#007aff 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  #0000ff 1%,#007aff 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#0000ff', endColorstr='#007aff',GradientType=0 ); /* IE6-9 */
+      }
+
+      h1,h2,h3,p { text-align: center; }
+      span.cyan    { color: cyan; }
+      span.yellow  { color: yellow; }
+      span.magenta { color: magenta; }
+
+      .logo {
+        width: 110px;
+        height: 110px;
+        margin: auto;
+        margin-left: 9em;
+      }
+
+      .stripey {
+        background: #5c71ff; /* Old browsers */
+        background: -moz-linear-gradient(top,  #5c71ff 0%, #5c71ff 33%, #8594ff 34%, #8594ff 66%, #99a6ff 67%, #99a6ff 100%); /* FF3.6+ */
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#5c71ff), color-stop(33%,#5c71ff), color-stop(34%,#8594ff), color-stop(66%,#8594ff), color-stop(67%,#99a6ff), color-stop(100%,#99a6ff)); /* Chrome,Safari4+ */
+        background: -webkit-linear-gradient(top,  #5c71ff 0%,#5c71ff 33%,#8594ff 34%,#8594ff 66%,#99a6ff 67%,#99a6ff 100%); /* Chrome10+,Safari5.1+ */
+        background: -o-linear-gradient(top,  #5c71ff 0%,#5c71ff 33%,#8594ff 34%,#8594ff 66%,#99a6ff 67%,#99a6ff 100%); /* Opera 11.10+ */
+        background: -ms-linear-gradient(top,  #5c71ff 0%,#5c71ff 33%,#8594ff 34%,#8594ff 66%,#99a6ff 67%,#99a6ff 100%); /* IE10+ */
+        background: linear-gradient(to bottom,  #5c71ff 0%,#5c71ff 33%,#8594ff 34%,#8594ff 66%,#99a6ff 67%,#99a6ff 100%); /* W3C */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#5c71ff', endColorstr='#99a6ff',GradientType=0 ); /* IE6-9 */
+
+        padding: 1em 0;
+      }
+
+      .stripey {
+        display: block;
+        margin: 5em 0;
+      }
+
+      .stripey img {
+        display: inline-block;
+        margin-bottom: 1em;
+      }
+    </style>
+    <link href="//www.mozilla.org/tabzilla/media/css/tabzilla.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+  </head>
+  <body>
+    <a href="http://www.mozilla.org/" id="tabzilla">mozilla</a>
+    <a href="https://github.com/pomax/friendlycode/tree/games"><img style="position: absolute; top: 0; left: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_left_gray_6d6d6d.png" alt="Grab the code on GitHub"></a>
+
+    <p><img src="img/landing/top_logo.png" alt="Hack a game" title="hackagame logo" class="logo"></p>
+    <h1><span class="cyan">HACK</span><span class="yellow">A</span><span class="magenta">GAME</span></h1>
+
+    <p class="stripey">
+      <img src="img/landing/pong_cover.png"><br>
+      <a href="./examples/pong.html"><img src="img/landing/button.png"></a>
+    <p>
+
+    <p class="stripey">
+      <img src="img/landing/arkanoid_cover.png"><br>
+      <a href="./examples/arkanoid.html"><img src="img/landing/button.png"></a>
+    <p>
+
+    <p>&nbsp;</p>
+  </body>
+  <script src="//www.mozilla.org/tabzilla/media/js/tabzilla.js"></script>
+</html>

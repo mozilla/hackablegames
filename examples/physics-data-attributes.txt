@@ -1,0 +1,72 @@
+data attributes on ...
+
+#world
+
+  data-gravity="<number> <number>"
+
+    this property has a two-number string, representing the
+    x- and the y- direction of gravity. While you might think
+    gravity only goes down, it doesn't have to!
+
+
+walls, paddles, bars
+
+  data-key-...="..., ..., ..."
+
+    These attributes let you move something around using
+    whatever key you want! The keys are normal text labels,
+    so if you want to use the 'w' key to move something down,
+    you can:
+
+      <div class="bar" data-key-one="w, 0, 0.1"></div>
+
+    This now makes our bar move when we press 'w', and it will
+    move it 0 units to the right, 0.1 units down. If we want
+    to use the down arrow instead, you can do that too:
+
+      <div class="bar" data-key-down="down, 0, 0.1"></div>
+
+    Or we can make the down arrow make the bar go up!
+
+      <div class="bar" data-key-down="down, 0, -0.1"></div>
+
+    Now it'll move right by 0 units and -0.1 units down,
+    which means 0.1 up!
+
+    We can also add as many of these keys as we want, as
+    long as the data-key- prefix is used. So we can use
+    "data-key-one", as well as "data-key-mongoose". As long
+    as no two attributes have exactly the same name, things
+    will work. This, however, won't:
+
+      <div class="bar" data-key-down="s, 0, 0.1" data-key-down="down, 0, 0.1"></div>
+
+    If there are multiple attributes with the same name,
+    the last one "wins", and only its code is used. So
+    remember to use unique names after "data-key-"!
+
+walls, paddles, bars, balls
+
+   data-density="..."
+
+    this indicates the weigh-to-size ratio for the element.
+    If you have a huge thing, with a density zero, it's going
+    to "weight" next to nothing, and the physics engine will
+    treat it as such.
+
+  data-friction="..."
+
+    this indicates how much "touching another thing" affects
+    where this thing is going. Usually this won't seem to do
+    much, but if objects at speed hit each other, friction
+    will slow them down and change the direction they're
+    going in
+
+  data-bounciness="..."
+
+    this indicates how much an object slows down (or rather
+    transfers its energy) when it hits something else. The
+    attribute is a number between 0 and 1, where 0 means
+    "no energy is transfered, this thing bounces perfectly"
+    and 1 means "all energy is transfered, this thing
+    stops moving once it hits something".

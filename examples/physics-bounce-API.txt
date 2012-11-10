@@ -1,0 +1,121 @@
+onbounce="..." API
+
+  destroy: function(selector)
+
+    removes a thing from the game world, by removing the
+    physics engine object, and giving the corresponding
+    HTML element a new data attribute called "data-destroyed".
+    To make things look properly destroyed, you can use
+    CSS to make destroyed things invisible:
+
+      *[data-destroyed] {
+        display: none;
+      }
+
+    elements are indicated using a "CSS selector", which
+    is the same kind of thing we use in CSS to indicate
+    which elements we should apply styling too. An
+    example:
+
+      <div class="ball b1" onbounce="destroy('.ball.b1')"></div>
+
+    This will "Destroy" all elements that can be matched
+    based on having both a class "ball" and "b1". So, if
+    we had this HTML, all of these would be destroyed:
+
+      <div class="ball" onbounce="destroy('.ball')"></div>
+      <div class="ball" onbounce="destroy('.ball')"></div>
+      <div class="ball" onbounce="destroy('.ball')"></div>
+      <div class="ball" onbounce="destroy('.ball')"></div>
+      <div class="ball" onbounce="destroy('.ball')"></div>
+
+
+  setClass: function(selector, className, expiry)
+
+    This function can add a CSS class to an HTML
+    element, either permanently or temporarily.
+
+      <div class="ball" onbounce="setClass('.ball', 'red')"></div>
+
+    This will assign the class "red" to all elements that
+    match the CSS selector ".ball", permanently. If we want
+    it to only last a specific amount of time, we can also
+    give the number of milliseconds we should wait before
+    removing the class again. Example:
+
+      <div class="ball" onbounce="setClass('.ball', 'red', 500)"></div>
+
+    This will add the "red" class to our ball elements, but
+    will remove them after half a second (there are 1000
+    milliseconds in a second, so 500 milleseconds, half
+    of 1000, is half of a second).
+
+
+  scaleSpeed: function(selector, factor) {
+
+    This function can be called for "things with speed".
+    In our Pong template that's the ball, but anything
+    that has a speed associated with it can be sped up
+    or down with this function. It doesn't let you set
+    the speed directly, but instead lets you multiply
+    the speed the thing currently has. So, let's say
+    we have this:
+
+      <div class="ball" onbounce="scaleSpeed('.ball', 2.0)"></div>
+
+    This will speed up two "2 x (the speed it has now)"
+    every time it bounces on something. If it's travelling
+    at 10 pixels per second before it bounces, it'll
+    be going at 20 pixes per second after bouncing. Then
+    after another bounce, it'll be 40, then 80, then 160,
+    and so forth.
+
+    If we want to slow down the ball, we could do this:
+
+      <div class="ball" onbounce="scaleSpeed('.ball', 0.75)"></div>
+
+    Now, every time the ball bounces it will slow down
+    to 75% speed. If it's going at 1000 pixels per second
+    before bouncing, it'll be going at 750 pixels per
+    second after bouncing. After another bounce it'll
+    be 562.5 pixels per second, then 421.875, then
+    316.40625, and so forth until it's moving at an
+    imperceivably slow speed very close to 0 pixels per second.
+
+  play: function(selector)
+
+    We can play sound files, as long as we use an <audio>
+    element in combination with our other HTML elements.
+    An example:
+
+      <div class="ball" onbounce="play('#superAudioElement')"></div>
+      <audio id="superAudioElement" src="http://wow.example.org/boing.mp4"></audio>
+
+    Now, every time the ball bounces, it will cause the <audio>
+    element that matches the CSS selector "#superAudioElement",
+    which is a selector for an element with id "superAudioElement",
+    to play its sound file.
+
+    We use this in the Arkanoid template for playing the bouncing
+    sound every time the ball hits a wall or a block or the paddle.
+
+  tally: function(selector, increment)
+
+    The tally function lets you add or remove points from
+    the score board. There's two helper functionis to make
+    things easier if you're using the default "left" and
+    "right" scoring board,
+
+      scoreLeft: function(val)
+      scoreRight: function(val)
+
+    We can either add numbers or remove them by using positive
+    or negative numbers. In the Arkanoid template, for instance,
+    we're using this:
+
+      <div class="bar" onbounce="scoreLeft(10)"></div>
+      <div class="ball" onbounce="scoreLeft(-1)"></div>
+
+   This combination makes the ball decrease the score by 1 every
+   time it bounces off of something, and bitting a bar then
+   (independently) increases the score by 10 points.

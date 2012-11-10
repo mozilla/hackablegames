@@ -1,0 +1,7 @@
+#example rewrite rule so that .../page/hf80fh turns into .../get.php?page=hf80fh, instead
+RewriteEngine on
+RewriteRule page/(.*)$ get.php?page=$1
+
+# http://hackagame.org rules:
+#RewriteRule ^publish(/.*)? examples/publish/post.php
+#RewriteRule ^examples/remixed/(.*)?$ examples/publish/get.php?page=$1
