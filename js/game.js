@@ -542,7 +542,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
 
     fixDef.density = element.getAttribute("data-density") || 0;
     fixDef.friction = element.getAttribute("data-friction") || 0;
-    fixDef.restitution = element.getAttribute("data-elasticity") || element.getAttribute("data-bounciness") || 1;
+    fixDef.restitution = element.getAttribute("data-bounciness") || 1;
 
     bodyDef.position.x = toBox2DValue(bbox.left - pbbox.left + bbox.width/2);
     bodyDef.position.y = toBox2DValue(bbox.top - pbbox.top + bbox.height/2);
