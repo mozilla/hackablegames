@@ -31,7 +31,7 @@ var OnBounceAPI = {
 
   // set an HTML element's css class to something (reverting after [expiry] seconds)
   setClass: function(selector, className, expiry) {
-    var elements = document.querySelector(selector);
+    var elements = document.querySelectorAll(selector);
     var e, element, last=elements.length;
     for(e=0; e<last; e++) {
       element = elements[e];
@@ -614,7 +614,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
     element.onchange = (function(ball) {
       return function() {
         // rebind attributes
-        console.log("rebinding attrs for ", ball);
+//        console.log("rebinding attrs for ", ball);
         var body = ball.b2,
             fixture = ball.b2.GetFixtureList(),
             element = ball.el;
