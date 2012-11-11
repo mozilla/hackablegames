@@ -278,6 +278,36 @@ var domKeyMapper = (function() {
   return new DOMKeyMapper();
 }());
 
+var domButtonMapper = (function() {
+
+  function DOMButtonMapper() {
+    this.buttons = {}; // Keys by keyCode
+    this._buttonCodes.forEach( function( arr ) {
+      var buttonName = arr[0];
+      var buttonCode = arr[1];
+      this.buttons[buttonCode] = buttonName;
+      this.buttons[buttonName] = buttonCode;
+    }.bind(this));
+  };
+
+  function getButtonName( code ) {
+    return this.keys[code];
+  }
+
+  function getButtonCode( name ) {
+    return this.buttons[name.toUpperCase()];
+  }
+
+  DOMKeyMapper.prototype._buttonCodes = [
+    ['LBUTTON', 0x00],
+    ['MBUTTON', 0x01],
+    ['RBUTTON', 0x02]
+  ];
+
+  DOMButtonMapper.prototype.getButtonName = getButtonName;
+  DOMButtonMapper.prototype.getButtonCode = getButtonCode;
+  return new DOMButtonMapper();
+}());
 
 
 // ================= Simplistic keyhandling (for now...)
@@ -300,9 +330,28 @@ function keyReleased(e) {
   }
 }
 
+var buttonDown = [];
+
+function mousePressed(e) {
+  var button = e.button;
+  if(button.indexOf(button) === -1) {
+    buttonDown.push(button);
+  }
+}
+
+function mouseReleased(e) {
+  var button = e.button;
+  var pos = buttonDown.indexOf(button) {
+    buttonDown.splice(pos, 1);
+    pos = buttonDown.indexOf(key);
+  }
+}
+
 // world event listening
 document.querySelector("#world").onkeydown = keyPressed;
 document.querySelector("#world").onkeyup = keyReleased;
+document.querySelector("#world").onmousedown = mousePressed;
+document.querySelector("#world").onmouseup = mouseReleased;
 
 // ================= DRAW LOOP REQUEST
 
@@ -464,6 +513,27 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
         }
       }
     },
+    updateButtons: function() {
+      if (!this.el || !this.el.attributes) return;
+      this.buttonHandlers = {};
+
+      var attrs = this.el.attributes, a, last=attrs.length, attr, splt, key, x, y;
+      for(a=0; a<last; a++) {
+        attr = attrs[a];
+        if(attr.name.match(/^data-button/)!==null) {
+          splt = attr.value.split(",");
+          if (splt.length===3) {
+            // formate: "key, <x, y> vector"
+            key = domButtonMapper.getButtonCode(splt[0].trim().toUpperCase());
+            x = parseFloat(splt[1].trim());
+            y = parseFloat(splt[2].trim());
+            this.buttonHandlers[key] = (function(bar,x,y) {
+              return function() { bar.moveBy(x,y); };
+            }(this,x,y));
+          }
+        }
+      }
+    },
     applyImpulse: function(x,y) {
       var c = this.center();
       this.b2.ApplyImpulse(new b2Vec2(x,y), c);
@@ -514,9 +584,14 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
       }
     },
     keyHandlers: {},
+    buttonhandlers: {},
     handleKey: function(key) {
       var fn = this.keyHandlers[key];
       if (typeof fn === "function") { fn(); }
+    },
+    handleButton: function(button) {
+      var fn = this.buttonHandlers[button];
+      if(typeof fn === "function"){ fn(); }
     }
   };
   Bar.prototype.constructor = Bar;
@@ -615,6 +690,11 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
         bar.handleKey(key);
       });
     });
+    buttonDown.forEach(function(button) {
+      bars.forEach(function(bar) {
+        bar.handleButton(button);
+      });
+    });
   }
 
   // schedule an object for destruction
@@ -625,11 +705,13 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
   var handleKeyPresses = function() {
     var fn = function(thing) {
       thing.updateKeys();
+      thing.updateButtons();
       keyDown.forEach(function(key) { thing.handleKey(key); });
+      buttonDown.forEach(function(button) { thing.handleButton(button); });
     };
     bars.forEach(fn);
     balls.forEach(fn);
-  };
+  }
 
   // draw loop
   var paused = false;
@@ -649,6 +731,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
 
     // allow the paddles to be moved based on keyinput
     handleKeyPresses();
+    handleButtonPresses();
 
     // check ball-in-world validity
     balls.forEach(function(ball) {
