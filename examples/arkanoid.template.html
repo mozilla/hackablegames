@@ -1,0 +1,297 @@
+<!-- ====================
+
+  Ahoy game maker and welcome on board! In this project you will be making your very own  game on the worldwide web. If that seems like a hard task to take upon do not fret! New game hits often come from remixing the classics. And what better classic to have in the mix than Pong?!
+
+  In this project you will use your favorite assets from the web, unleash your HTML & CSS skills and create your own version of the favorite arcade classic Pong!
+
+==================== -->
+
+<!-- You might notice some words on this page (like <h1> and <p>) which are inside of angle brackets and colored blue.
+
+These words are called tags. Tags help you to structure your page. The most important thing to remember is that tags (with a few exceptions, like <img>) come in pairs - so you almost always need to have an opening and closing tag.
+
+For instance, below this comment is a heading. Everything between the <h1> and </h1> tags becomes a big header on the preview page on your right. Try it out by changing the title for your game. -->
+
+<h1>Arkanoid!</h1>
+
+<!-- The <p> tag below stands for paragraph. Add a description for your game and rememeber to put a tag at the exact point you want the paragraph to start , like this <p> and another tag where you want the paragraph to end, like this </p>. Some of the text in this paragraph has emphasis, or strong emphasis. These are indicated with <em>..</em> and <strong>...</strong> tags. Try giving some of your own text empahsis! -->
+
+<p><em>I hacked Pong.</em> This started out as the <a href="/examples/pong.html">Pong template</a>, but then we added a column of wall blocks, and then another, and another, and before we knew it we had arkanoid! <strong>Remixing is fun</strong>.</p>
+
+<section id="game">
+
+  <!-- Now that you know a little bit more about HTML it's time for some game-hacking.
+
+  Rumor has it that games are systems made out of different parts. Take Pong, for example; it has two paddles, a "ball" (even though it's actually a rectangle) a background that is defined by a top and bottom "wall" so that the ball doesn't escape the screen, oh yes and the score!
+  All these parts are designed to work together to deliver players with endless gameplay fun.
+
+  To make your own pong-tastic game we will hack these parts by tinkering with the <div> tags below. What is <div> you might ask? Well a <div> is a  container that can be used to hold things together. In this case each <div>   holds parts of the game such as the paddles, the walls and the ball. -->
+
+  <div id="world" tabindex="0">
+
+    <!-- The first three <div>s are the walls at the top, bottom, and right of the screen. Imagine them like a sandwich that keeps the ball bouncing back when it hits the edges of the space. Try deleting one to see what happens. Click undo on your navigation bar if you want to go back to your previous action. -->
+
+    <div class="top wall"></div>
+    <div class="bottom wall"></div>
+    <div class="wall right"></div>
+
+    <!-- The next <div> is the player paddle. It's actually almost the same as walls, except it can respond to the keyboard. If you press "w" or "s" you will move the paddle up/down. Of course, we can play around with these paddles. Try giving your player two paddles, for instance by adding a new div!
+
+    If you played with the Pong template, you'll notice that we no longer have a right paddle for player two... but what would happen if we put it back in? -->
+    <div class="paddle left"  data-key-one=" w, 0, -0.1" data-key-two="s, 0, 0.1"></div>
+
+    <!-- Every section represents a column of blocks, indicated with the class "bar", because that's what they are (walls and paddles are also bars). -->
+    <section class="c0 purple">
+      <div class="bar p1" onbounce="destroy('.c0 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2" onbounce="destroy('.c0 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3" onbounce="destroy('.c0 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4" onbounce="destroy('.c0 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5" onbounce="destroy('.c0 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6" onbounce="destroy('.c0 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <!-- this is the second column of bars that we can hit -->
+    <section class="c1">
+      <div class="bar p1 red"  onbounce="destroy('.c1 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2 blue" onbounce="destroy('.c1 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3 red"  onbounce="destroy('.c1 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4 blue" onbounce="destroy('.c1 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5 red"  onbounce="destroy('.c1 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6 blue" onbounce="destroy('.c1 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <!-- the third column... -->
+    <section class="c2">
+      <div class="bar p1 yellow" onbounce="destroy('.c2 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2 green"  onbounce="destroy('.c2 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3 yellow" onbounce="destroy('.c2 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4 green"  onbounce="destroy('.c2 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5 yellow" onbounce="destroy('.c2 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6 green"  onbounce="destroy('.c2 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <!-- fourth... -->
+    <section class="c3">
+      <div class="bar p1 blue" onbounce="destroy('.c3 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2 red"  onbounce="destroy('.c3 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3 blue" onbounce="destroy('.c3 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4 red"  onbounce="destroy('.c3 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5 blue" onbounce="destroy('.c3 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6 red"  onbounce="destroy('.c3 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <!-- etc. -->
+    <section class="c4">
+      <div class="bar p1 green"  onbounce="destroy('.c4 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2 yellow" onbounce="destroy('.c4 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3 green"  onbounce="destroy('.c4 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4 yellow" onbounce="destroy('.c4 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5 green"  onbounce="destroy('.c4 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6 yellow" onbounce="destroy('.c4 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <section class="c5">
+      <div class="bar p1 red"  onbounce="destroy('.c5 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2 blue" onbounce="destroy('.c5 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3 red"  onbounce="destroy('.c5 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4 blue" onbounce="destroy('.c5 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5 red"  onbounce="destroy('.c5 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6 blue" onbounce="destroy('.c5 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <section class="c6">
+      <div class="bar p1 yellow" onbounce="destroy('.c6 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2 green"  onbounce="destroy('.c6 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3 yellow" onbounce="destroy('.c6 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4 green"  onbounce="destroy('.c6 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5 yellow" onbounce="destroy('.c6 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6 green"  onbounce="destroy('.c6 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <section class="c7 purple">
+      <div class="bar p1" onbounce="destroy('.c7 .bar.p1') scoreLeft(10)"></div>
+      <div class="bar p2" onbounce="destroy('.c7 .bar.p2') scoreLeft(10)"></div>
+      <div class="bar p3" onbounce="destroy('.c7 .bar.p3') scoreLeft(10)"></div>
+      <div class="bar p4" onbounce="destroy('.c7 .bar.p4') scoreLeft(10)"></div>
+      <div class="bar p5" onbounce="destroy('.c7 .bar.p5') scoreLeft(10)"></div>
+      <div class="bar p6" onbounce="destroy('.c7 .bar.p6') scoreLeft(10)"></div>
+    </section>
+
+    <!-- This final <div> is our ball. Normally, Pong has one ball, but what if we used more than one....? Old plain Pong would instantly become super-awesome multiplayer pong! Let's try to do that by copying and pasting <div class="ball" data-friction="0" data-bounciness="1"></div>
+
+    If you played with the Pong template, you might notice the ball has a new attribute, called "onbounce". This attribute has some code that is run every time the ball bounces off of something. In this case, it plays a sound... but how does it play a sound?
+
+    For that, let's look at the element that follows our ball...-->
+
+    <div class="ball" data-friction="0" data-bounciness="1"
+         onbounce="play('.broing') scoreLeft(-1)"></div>
+
+    <!-- This is an audio element. It lets you load audio clips, or full musical tracks, onto a webpage. We can make an audio element play the file it has loaded, so if we tell the page to play it every time the ball bounces, then it'll seem like our ball has a sound effect. Can you find a new sound effect to play when the ball bounces? You can find lots of sound effects on http://freesound.org -->
+
+    <audio src="http://labs.petegoodman.com/ghetto_blaster/_includes/sfx/worms/TWANG5.WAV" class="broing"></audio>
+  </div>
+
+  <!-- This is where we keep score. Everytime any ball flies off the screen, it's a point against the player that let it through. Right now the score is set to 0-0. Can you make it start at 10-10? -->
+
+  <div class="scores">
+    <span class="left">0</span>
+  </div>
+
+  <!-- Now that you are almost done with your gameplay you need buttons to start and pause your game. Well we are giving you  two button elements for free, and they've been set up to start a game, and pause a running game. We need these to play our game, but removing them, or changing what they do, will probably lead to game simply not being playable. They rely on JavaScript, which is a more advanced language than HTML & CSS and you can get started with it here; https://www.webmaker.org/en-US/projects/make-your-own-game-using-javascript -->
+
+  <button onclick="start()">Start the game</button>
+  <button onclick="pause()">Pause the game</button>
+</section>
+
+<!-- Everything contained within this <style> tag is called CSS and it is used to .. you guessed it right; to give some "super stylin" to your webpage. Start hacking the CSS below to add supreme shine to your game; give a theme to your masterpiece, change the world to a tropical island or switch the paddles to images of cat heads... the possibilities are endless!
+
+CSS is slightly different from HTML, and uses a different "syntax", which is a fancy word for "the kind of code you use". Comments inside a <style> element start with /* and end with */, and the styling rules use the following format:
+
+  CSS element pattern {
+    css property name: value for that property;
+    another css property name: value for that property;
+    ... : ... ;
+  }
+
+So first a CSS "selector", which tells the browser which elements this rule will be used for, and then one or more property/value indicators wrapped in curly brackets. CSS properties are things like background color, width and height, border decoration, which font to use for text, etc. Let's have a look at what the default game uses: -->
+
+<style>
+
+  /* The following CSS rule says: "for the element with id 'game', center-align the text". The CSS notation for rules that should apply to elements based on their "id" attribute is to use #idtext, so <section id="game"> can be styled using #game - ids are unique, so only one element can have a specific id. That means that any CSS rule we make up for it will only ever apply to that one element. */
+
+  #game {
+    text-align: center;
+  }
+
+  /* Next up, we have the CSS for the "world" element. Let's change it up! Give this element some new styling by giving it a background image: add the following code to the set of property:value pairs:
+
+  background-image: url('http://farm6.staticflickr.com/5081/5329485459_1eed1a7aa1.jpg');
+
+  This will make it a tropical game! Of course, since we've just given it an image link, we can also use a different URL. Go find an image that you like as background for the game, using Flickr or Google, and see if you can replace the URL that is in the example background-image for the one you want instead. */
+
+  #world {
+    position: relative;
+    height: 300px;
+    width:  500px;
+    background-color: #333;
+    vertical-align: middle;
+    margin: auto;
+    overflow: hidden;
+  }
+
+  /* Now that you learned how to add images to the different parts of your game, go ahead and add images to the paddles and ball below.
+
+  These rules uses a different notation. We saw that #text is for elements with and "id" attribute, the paddle and ball rules apply to elements with a "class" attribute. In the HTML (scroll up to have a look at it again), you'll see <div class="ball"...>, and in order to style everything with a specific class, we can use CSS rules that start with a dot and then the class name. The paddle rules are for ".paddle", which means that they will be used for any element that has uses word "paddle" as a class word. Unlike ids, classes can be used by as many elements as you like, so changing the rule for ".paddle" will change both paddles. However, we can also be more specific. Can you find which rules are only for the left or paddle, and change them so that only one of them looks different? */
+
+  .paddle {
+    position: absolute;
+    display: inline-block;
+    width: 10px;
+    height: 100px;
+    background-color: green;
+    top: 40%;
+  }
+
+  .paddle.left { left: 10px; }
+  .paddle.right { right: 10px; }
+
+  .ball {
+    position: absolute;
+    background-color: white;
+    width: 10px;
+    height: 10px;
+    top: 50%;
+    left: 250px;
+  }
+
+  /* In addition to the paddles and ball, it's easy to overlook that the walls are also just plain HTML elements with styling applied. See if you can figure out what the following rules mean, and try to change them into something different. */
+
+  .wall {
+    position: absolute;
+    width: 100%;
+    height: 5px;
+    background-color: green;
+  }
+
+  .wall.top { top: 0; }
+  .wall.bottom { bottom: 0; }
+  .wall.right { right: 0; height: 100%; width: 5px;}
+
+  /* In order to show our "bricks" on the page, we have to style them with CSS. See what happens when you modify the property:value pairs in this rule for bars. */
+  .bar {
+    position: absolute;
+    right: 10px;
+    width: 10px;
+    height: 30px;
+    border: 2px inset #999;
+  }
+
+  /* all the "c"olumns get their own style rules, which will determine where they are */
+  .c0 div, .c1 div, .c2 div, .c3 div, .c4 div, .c5 div, .c6 div, .c7 div {
+    position: absolute;
+  }
+
+  /* See if you can move the columns around by changing these numbers =) */
+  .c0 div { left: 310px; }
+  .c1 div { left: 340px; }
+  .c2 div { left: 360px; }
+  .c3 div { left: 380px; }
+  .c4 div { left: 400px; }
+  .c5 div { left: 420px; }
+  .c6 div { left: 440px; }
+  .c7 div { left: 470px; }
+
+  /* The "p" values determine how high each brick sits in a column. Try changing these numbers and see what happens. */
+  .p1 { top: 40px; }
+  .p2 { top: 80px; }
+  .p3 { top: 120px; }
+  .p4 { top: 160px; }
+  .p5 { top: 200px; }
+  .p6 { top: 240px; }
+
+  /* You may have noticed we used a few colors in the HTML code for our bricks. Since colors are a styling thing, this is where you can find the CSS rules for which colors are used. Of course, we can completely switch things around. Try changing the background-color for ".red" from "red" to "orange"... You could even use an image again, instead of a plain colour! */
+  .red,
+  .red div { background-color: red; }
+
+  .yellow,
+  .yellow div { background-color: yellow; }
+
+  .blue,
+  .blue div { background-color: lightblue; }
+
+  .green,
+  .green div { background-color: #3A3; }
+
+  .purple,
+  .purple div { background-color: #F6F; }
+
+  /* This is a special CSS rule; when things get "destroy"ed in the game, they get a special data attribute added to them, so something like <div class="bar"></div> becomes <div class="bar" data-destroyed></div> -- we can either hide destroyed things, by adding a property:value pair such as "display: none", but we can also make things just look different. In this case, rather than hide destroyed things, we actually make them almost perfectly transparent. If you play the game, you will see blocks that have been hit not disappear but become very faintly visible. Can you think of other ways to make it obvious that a block was hit? */
+
+  *[data-destroyed] {
+    opacity: 0.1;
+  }
+
+  .scores {
+    width: 500px;
+    margin: auto;
+    background: black;
+    color: white;
+    font-size:200%;
+    font-family: monospace;
+    font-weight: bold;
+  }
+</style>
+
+<!-- When you are happy with a first version of your game, "playtest" it with your friends or family. "Playtest" is a word we use in game design to describe the process of testing your game in order to find out what works and what doesn't.
+
+Ask your playtester if the game was fun and if they have any suggestions for improving it. Make sure to use the feedback you got to create an improved spectacular version of your game. -->
+
+
+<!-- ====================
+
+  Congrats! You've successfully hacked Arkanoid to make your own masterpiece! Looks like its going to be a fun one. You might not have noticed, but you gained some game design and HTML & CSS skills along the way. You now know the basics of a building a game system and how to work with headings (<h1> tag), paragraphs (<p> tag), divs (<div> tag) and tweak elements with style (<style> tag) in HTML5. You even did some playtesting of your game. Way to go, Game Master!
+
+==================== -->
+
+<script src="../js/Box2dWeb-2.1.a.3.js"></script>
+<script src="../js/game.js"></script>
