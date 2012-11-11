@@ -298,7 +298,7 @@ var domButtonMapper = (function() {
     return this.buttons[name.toUpperCase()];
   }
 
-  DOMKeyMapper.prototype._buttonCodes = [
+  DOMButtonMapper.prototype._buttonCodes = [
     ['LBUTTON', 0x00],
     ['MBUTTON', 0x01],
     ['RBUTTON', 0x02]
@@ -334,16 +334,17 @@ var buttonDown = [];
 
 function mousePressed(e) {
   var button = e.button;
-  if(button.indexOf(button) === -1) {
+  if(buttonDown.indexOf(button) === -1) {
     buttonDown.push(button);
   }
 }
 
 function mouseReleased(e) {
   var button = e.button;
-  var pos = buttonDown.indexOf(button) {
+  var pos = buttonDown.indexOf(button);
+  if(pos !== -1) {
     buttonDown.splice(pos, 1);
-    pos = buttonDown.indexOf(key);
+    pos = buttonDown.indexOf(button);
   }
 }
 
@@ -513,27 +514,6 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
         }
       }
     },
-    updateButtons: function() {
-      if (!this.el || !this.el.attributes) return;
-      this.buttonHandlers = {};
-
-      var attrs = this.el.attributes, a, last=attrs.length, attr, splt, key, x, y;
-      for(a=0; a<last; a++) {
-        attr = attrs[a];
-        if(attr.name.match(/^data-button/)!==null) {
-          splt = attr.value.split(",");
-          if (splt.length===3) {
-            // formate: "key, <x, y> vector"
-            key = domButtonMapper.getButtonCode(splt[0].trim().toUpperCase());
-            x = parseFloat(splt[1].trim());
-            y = parseFloat(splt[2].trim());
-            this.buttonHandlers[key] = (function(bar,x,y) {
-              return function() { bar.moveBy(x,y); };
-            }(this,x,y));
-          }
-        }
-      }
-    },
     applyImpulse: function(x,y) {
       var c = this.center();
       this.b2.ApplyImpulse(new b2Vec2(x,y), c);
@@ -584,7 +564,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
       }
     },
     keyHandlers: {},
-    buttonhandlers: {},
+    buttonHandlers: {},
     handleKey: function(key) {
       var fn = this.keyHandlers[key];
       if (typeof fn === "function") { fn(); }
@@ -635,7 +615,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
     element.onchange = (function(ball) {
       return function() {
         // rebind attributes
-        console.log("rebinding attrs for ", ball);
+        //console.log("rebinding attrs for ", ball);
         var body = ball.b2,
             fixture = ball.b2.GetFixtureList(),
             element = ball.el;
@@ -704,14 +684,29 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
 
   var handleKeyPresses = function() {
     var fn = function(thing) {
-      thing.updateKeys();
-      thing.updateButtons();
-      keyDown.forEach(function(key) { thing.handleKey(key); });
-      buttonDown.forEach(function(button) { thing.handleButton(button); });
+      if(thing.updateKeys) thing.updateKeys();
+      if(thing.updateButtpons) thing.updateButtons();
+      keyDown.forEach(function(key) { if(thing.handleKey) thing.handleKey(key); });
+      buttonDown.forEach(function(button) { if(thing.handleButton) thing.handleButton(button); });
     };
     bars.forEach(fn);
     balls.forEach(fn);
+    // one button mechanic
+    fn(document.getElementById("world"));
   }
+
+  var handleButtonPresses = function(worldParent) {
+    var attrs = worldParent.attributes, a, last=attrs.length, attr, splt, button, x, y;
+    for(a=0; a<last; a++) {
+      attr = attrs[a];
+      if(attr.name == "data-button") {
+
+        console.log(attr.value);
+
+      }
+    }
+  };
+
 
   // draw loop
   var paused = false;
@@ -731,7 +726,7 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
 
     // allow the paddles to be moved based on keyinput
     handleKeyPresses();
-    handleButtonPresses();
+    handleButtonPresses(document.getElementById("world"));
 
     // check ball-in-world validity
     balls.forEach(function(ball) {
