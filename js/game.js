@@ -513,6 +513,60 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
         }
       }
     },
+    // fixme: REFACTOR
+    onbuttondown: function() {
+      var element = this.el;
+      if(element.hasAttribute("onbuttondown")) {
+        var bounceCode = element.getAttribute("onbuttondown");
+        // form the list of function calls
+        var split = bounceCode.split(")"),
+            code = [];
+        split.forEach(function(s) {
+          if(!s.trim()) return;
+          code.push("OnBounceAPI." + s.trim() + ");");
+        });
+        // create a new function that runs through the calls,
+        // and is triggered as an onbounce (called by box2d contact listener)
+        try {
+          var fn = new Function(code.join("\n"));
+          try { fn(); }
+          catch(runtimeError) {
+            // runtime error in code: throw it up
+            throw(runtimeError);
+          }
+        } catch(syntaxRrror) {
+          // syntax error in Function - don't run it.
+          console.log("syntax error");
+        }
+      }
+    },
+    // fixme: REFACTOR
+    onbuttonup: function() {
+      var element = this.el;
+      if(element.hasAttribute("onbuttonup")) {
+        var bounceCode = element.getAttribute("onbuttonup");
+        // form the list of function calls
+        var split = bounceCode.split(")"),
+            code = [];
+        split.forEach(function(s) {
+          if(!s.trim()) return;
+          code.push("OnBounceAPI." + s.trim() + ");");
+        });
+        // create a new function that runs through the calls,
+        // and is triggered as an onbounce (called by box2d contact listener)
+        try {
+          var fn = new Function(code.join("\n"));
+          try { fn(); }
+          catch(runtimeError) {
+            // runtime error in code: throw it up
+            throw(runtimeError);
+          }
+        } catch(syntaxRrror) {
+          // syntax error in Function - don't run it.
+          console.log("syntax error");
+        }
+      }
+    },
     keyHandlers: {},
     handleKey: function(key) {
       var fn = this.keyHandlers[key];
@@ -759,6 +813,16 @@ function fromBox2DValue(v) { return BOX2D_PIXELS_PER_METER*v; }
         balls.push(ball);
       }
     }());
+
+    worldParent.onmousedown = function() {
+      bars.forEach(function(b) { b.onbuttondown(); });
+      balls.forEach(function(b) { b.onbuttondown(); });
+    };
+
+    worldParent.onmouseup = function() {
+      bars.forEach(function(b) { b.onbuttonup(); });
+      balls.forEach(function(b) { b.onbuttonup(); });
+    };
 
     worldParent.onchange = (function(element) {
       return function() {
